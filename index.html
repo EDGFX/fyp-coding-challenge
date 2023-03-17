@@ -14,7 +14,7 @@
   <link rel='canonical' href='https://edgfx.github.io/fyp-coding-challenge/' /> 
   <title>FYP Coding Challenge</title> 
   <style>
-    .category {
+  .category {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       border-radius: 10px;
@@ -66,13 +66,12 @@
     }
 
     .category.active .product {
-        display: flex;
+        display: block;
+        text-align: center;
         transition: 1s;
     }
 
     .product {
-      display: flex;
-      flex-direction: column;
       background-color: #ccc;
       padding: 20px;
       color: #1e1e1e;
@@ -92,7 +91,7 @@
     }
 
     .product__saleprice {
-      background-color: goldenrod;
+      background-color:goldenrod;
       opacity: 0;
       font-size: 12px;
       padding: 8px;
