@@ -60,15 +60,14 @@
     }
 
     .category .product {
-        height: 0;
+        display: none;
         font-size: 20px;
-        overflow: hidden;
         transition: 1s;
     }
 
     .category.active .product {
+        display: flex;
         transition: 1s;
-        height: 220px;
     }
 
     .product {
@@ -93,7 +92,7 @@
     }
 
     .product__saleprice {
-      background-color:goldenrod;
+      background-color: goldenrod;
       opacity: 0;
       font-size: 12px;
       padding: 8px;
