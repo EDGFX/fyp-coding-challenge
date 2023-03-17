@@ -35,8 +35,23 @@
     }
 
     .category__heading {
+      background-color: #2b2b2b;
       padding: 20px;
       border-radius: 10px;
+    }
+
+    .category__heading:after {
+      content: "v";
+      float: right;
+      margin-top: 5px;
+      transform: rotate(0deg);
+      transition: .5s;
+      font-size: 16px;
+    }
+
+    .category.active .category__heading:after {
+      transform: rotate(180deg) translate(0px, 4px);
+      transition: .5s;
     }
 
     .category__heading:hover {
@@ -185,10 +200,10 @@
         const index = favorites.indexOf(productId);
         if (index === -1) {
             favorites.push(productId);
-            console.log("Favorited: " + productId);
+             console.log(`gtag("event": "product_favorited", "product_id": "${productId}")`);
         } else {
             favorites.splice(index, 1);
-            console.log("Unfavorited: " + productId);
+            console.log(`gtag("event": "product_unfavorited", "product_id": "${productId}")`);
         }
         localStorage.setItem('favorites', JSON.stringify(favorites));
         event.currentTarget.classList.toggle('favorite');
@@ -198,21 +213,11 @@
         document.querySelectorAll(`[id="${productId}"] .heart path`).forEach(path => {
             path.setAttribute('fill', isFavorite(productId) ? 'red' : 'white');
         });
-
-        trackFavoriteProduct(productId);
     }
 
     function isFavorite(productId) {
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         return favorites.includes(productId);
-    }
-
-    function trackFavoriteProduct(productId) {
-        gtag('event', 'favorite_product', {
-            'event_category': 'engagement',
-            'event_label': 'Product Favorited',
-            'product_name': productId
-        });
     }
   </script>
 </body>
