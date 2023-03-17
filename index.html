@@ -185,10 +185,10 @@
         const index = favorites.indexOf(productId);
         if (index === -1) {
             favorites.push(productId);
-            console.log("Favorited: " + productId);
+             console.log(`gtag("event: product_favorited", "${productId}")`);
         } else {
             favorites.splice(index, 1);
-            console.log("Unfavorited: " + productId);
+            console.log(`gtag("event: product_unfavorited", "${productId}")`);
         }
         localStorage.setItem('favorites', JSON.stringify(favorites));
         event.currentTarget.classList.toggle('favorite');
@@ -198,21 +198,11 @@
         document.querySelectorAll(`[id="${productId}"] .heart path`).forEach(path => {
             path.setAttribute('fill', isFavorite(productId) ? 'red' : 'white');
         });
-
-        trackFavoriteProduct(productId);
     }
 
     function isFavorite(productId) {
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         return favorites.includes(productId);
-    }
-
-    function trackFavoriteProduct(productId) {
-        gtag('event', 'favorite_product', {
-            'event_category': 'engagement',
-            'event_label': 'Product Favorited',
-            'product_name': productId
-        });
     }
   </script>
 </body>
