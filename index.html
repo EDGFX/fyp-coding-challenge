@@ -127,28 +127,29 @@
     fetch('https://neodigm.github.io/FED_Programming_Challenge/products.json')
       .then(response => response.json())
       .then(data => {
+        // Pass JSON data into categorizeData() function.
         const categorizedData = categorizeData(data);
+        // Send categorizedData into generateHtmlElements() function for client-side rendering.
         generateHtmlElements(categorizedData);
       })
-    .catch(error => console.error(error));
+    .catch(error => console.error(error)); // Catch Error If It Occurs
 
     function categorizeData(data) {
-        // Categorize the data into an object where the keys are the category names
-        // and the values are arrays of products that belong to that category
         const categorizedData = {};
         data.forEach(product => {
-            // If product category doesn't already exist inside the category array, add it to the array
+            // Iterate through each product (incoming from JSON file), and determine whether or not respective product category already exists.
+            // If it doesn't, add it.
             if (!categorizedData[product.cat]) {
-            categorizedData[product.cat] = [];
+              categorizedData[product.cat] = [];
             }
-            // If product category already exists within the category array, add products to their respective categories
+            // If product category already exists, add products to their respective categories within "categorizedData" object.
             categorizedData[product.cat].push(product);
         });
         return categorizedData;
     }
 
     function generateHtmlElements(data) {
-        // Iterate through the categorized data structure and generate HTML elements
+        // Iterate through the categorizedData object and generate HTML elements and Event Listeners for each category.
         Object.entries(data).forEach(([cat, products]) => {
             const categoryDiv = document.createElement('div');
             categoryDiv.classList.add('category');
@@ -156,12 +157,13 @@
             categoryDiv.innerHTML = `
             <h2 class="category__heading">${cat}</h2>
             `;
-            //If category heading is clicked, add active class to the product category container
+            //If category heading is clicked, add active class to the product category container (Category Container > Category > Products)
             categoryDiv.querySelector('.category__heading').addEventListener('click', function(event) {
                 categoryDiv.classList.toggle('active');
             });
             productContainer.appendChild(categoryDiv);
-
+            
+            // Iterate through products in category and generate HTML elements and Event Listeners for each product.
             products.forEach(product => {
             const productDiv = document.createElement('div');
             productDiv.dataset.productId = product.product;
@@ -174,6 +176,7 @@
                 <p class="product__saleprice">Sale Price: $${product.sale}</div>
             `;
             productDiv.addEventListener('click', toggleFavorite);
+            // Logic to handle Heart SVG behavior based on whether or not a product is favorited.
             productDiv.addEventListener('mouseover', function(event) {
                 const heart = event.currentTarget.querySelector('.heart');
                 if (!isFavorite(product.product)) {
@@ -196,23 +199,28 @@
         const productId = event.currentTarget.dataset.productId;
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         const index = favorites.indexOf(productId);
+        
+        // If product doesn't exist within Local Storage, push the product in.
         if (index === -1) {
             favorites.push(productId);
-             console.log(`gtag("event": "product_favorited", "product_id": "${productId}")`);
+             console.log(`gtag("event": "product_favorited", "product_id": "${productId}")`); // Mock Analytics Event
         } else {
+            // If product is already favorited, remove it from Local Storage.
             favorites.splice(index, 1);
-            console.log(`gtag("event": "product_unfavorited", "product_id": "${productId}")`);
+            console.log(`gtag("event": "product_unfavorited", "product_id": "${productId}")`); // Mock Analytics Event
         }
+        // Convert our JS values into JSON strings
         localStorage.setItem('favorites', JSON.stringify(favorites));
-        event.currentTarget.classList.toggle('favorite');
+        event.currentTarget.classList.toggle('favorite'); // Add "favorite" class and heart to targeted product.
         const heart = event.currentTarget.querySelector('.heart');
-        heart.querySelector('path').setAttribute('fill', isFavorite(productId) ? 'red' : 'white');
+        heart.querySelector('path').setAttribute('fill', isFavorite(productId) ? 'red' : 'white'); // Logic to handle heart color based on whether favorited or not.
 
         document.querySelectorAll(`[id="${productId}"] .heart path`).forEach(path => {
             path.setAttribute('fill', isFavorite(productId) ? 'red' : 'white');
         });
     }
 
+    // Check whether product is favorited or not, to be used to determine color of Heart SVG for products.
     function isFavorite(productId) {
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         return favorites.includes(productId);
